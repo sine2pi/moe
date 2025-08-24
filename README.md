@@ -1,4 +1,4 @@
-Different gates for gating.. They were written with multiple audio features in mind but are pretty generic.
+Different gates for gating.. They were written with multiple audio features in mind but are pretty generic. I'll continue to add more as I organize my stuff.
 
 ## Gates 
 
