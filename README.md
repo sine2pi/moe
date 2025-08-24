@@ -122,14 +122,6 @@ class StraightThroughThreshold(torch.autograd.Function):
 
 apply_ste_threshold = StraightThroughThreshold.apply
 
-def sinusoidz(length, dims):
-    position = torch.arange(0, length, dtype=torch.float).unsqueeze(1)
-    div_term = torch.exp(torch.arange(0, dims, 2).float() * (-math.log(10000.0) / dims))
-    pe = torch.zeros(length, dims)
-    pe[:, 0::2] = torch.sin(position * div_term)
-    pe[:, 1::2] = torch.cos(position * div_term)
-    return pe.unsqueeze(0)
-
 class LinearGate(nn.Linear):
     def __init__(self, in_features, out_features, act="swish", norm_type=None, context = 4, num_types=4, top=4):
         super().__init__(in_features, out_features, bias=False, device=device, dtype=dtype)
@@ -145,7 +137,7 @@ class LinearGate(nn.Linear):
 
     def forward(self, x, top=4):
         x = x.unsqueeze(-2)
-        x = x * (1 + get_activation(self.act)((rearrange(self.context, 'n -> 1 1 n 1') * self.gate(x).squeeze(-1)).mean(-1, keepdim=True)))
+        x = x * (1 + get_activation(self.act)((rearrange(self.context, 'c -> 1 1 c 1') * self.gate(x).squeeze(-1)).mean(-1, keepdim=True)))
         x = x + self.bias2.unsqueeze(0)
         _, indices = torch.topk(x, self.top, dim=-2, sorted=False)
         x = torch.gather(x, -2, indices).mean(dim=-2)
