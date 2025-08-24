@@ -598,10 +598,10 @@ class MixtureOfMemories(nn.Module):
         return output
 
 class Transformer(nn.Module):
-    def __init__( self, dims: int, head: int, num_experts: int, expert_size: int, num_layers: int):
+    def __init__( self, dims: int, head: int, num_experts: int, expert_size: int, layer: int):
         super().__init__()
 
-        self.layers = nn.ModuleList([MixtureOfMemories( dims, head, num_experts, expert_size ) for _ in range(num_layers)])
+        self.layers = nn.ModuleList([MixtureOfMemories( dims, head, num_experts, expert_size ) for _ in range(layer)])
         self.y = torch.zeros(1, dims)
 
     def forward(self, x: Tensor) -> Tensor:
